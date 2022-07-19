@@ -9,4 +9,14 @@
  	from
  		`user`
  	</select>
+ 	<select id="selectUserByLoginId" resultType="com.sns.user.User">
+ 	select 
+ 		*
+ 	from
+ 		`user`
+ 	where 
+ 		loginId = #{loginId}
+ 	limit 1
+ 	
+ 	</select>
  </mapper>

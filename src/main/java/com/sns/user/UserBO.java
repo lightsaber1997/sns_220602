@@ -14,5 +14,9 @@ public class UserBO {
 	public List<User> getUserList() {
 		return userDAO.selectUserList();
 	}
+	
+	public User getUserByLoginId(String loginId) {
+		
+	}
 
 }

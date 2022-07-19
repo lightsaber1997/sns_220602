@@ -16,4 +16,9 @@ public class UserRestController {
 	public List<User> userList() {
 		return userBO.getUserList();
 	}
+	
+	@RequestMapping("/is_duplicated_id")
+	public boolean isDuplicatedId() {
+		
+	}
 }
