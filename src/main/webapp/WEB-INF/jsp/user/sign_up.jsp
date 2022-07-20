@@ -96,6 +96,7 @@ $(document).ready(function() {
 	});
 	
 	$("#signUpBtn").on("click", function() {
+		let loginId = $("input[name=loginId]").val();
 		let password = $("input[name=password]").val();
 		let confirmPassword = $("input[name=confirmPassword]").val();
 		let name = $("input[name=name]").val();
@@ -129,7 +130,7 @@ $(document).ready(function() {
 		}
 		
 		$.ajax({
-			url: "",
+			url: "/user/sign_up",
 			data: {"loginId": loginId, 
 				"password": password,
 				"name": name,
@@ -138,7 +139,8 @@ $(document).ready(function() {
 			success: function(data) {
 				if (data["success"] == true) {
 					alert("success");
-					// location.href = "/user/sign_in_view";
+					console.log("data");
+					location.href = "/user/sign_in_view";
 				}
 				
 				else {

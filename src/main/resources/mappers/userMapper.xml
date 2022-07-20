@@ -19,8 +19,10 @@
  	limit 1
  	
  	</select>
- 	<insert id="addUser">
- 	insert into `user` (loginId, password, name, email)
- 	values (#{loginId} , #{password}, #{name}, #{email})
+ 	<insert id="insertUser">
+ 	insert into `user` 
+ 		(loginId, password, name, email)
+ 	values 
+ 		(#{loginId} , #{password}, #{name}, #{email})
  	</insert>
  </mapper>
