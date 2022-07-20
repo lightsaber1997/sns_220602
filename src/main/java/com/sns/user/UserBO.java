@@ -3,6 +3,7 @@ package com.sns.user;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ public class UserBO {
 	private UserDAO userDAO;
 	
 	@Autowired
+	@Qualifier("MD5")
 	private PasswordEncoder passwordEncoder;
 	
 	public List<User> getUserList() {
@@ -30,14 +32,22 @@ public class UserBO {
 	}
 	
 	public User getUser(String loginId, String password) {
-		
-		User user = this.getUserByLoginId(loginId);
-		if (passwordEncoder.matches(password, user.getPassword())) {
-			return user;
+		try {
+			User user = this.getUserByLoginId(loginId);
+			if (user == null) {
+				return null;
+			}
+			
+			if (passwordEncoder.matches(password, user.getPassword())) {
+				return user;
+			}
+			else {
+				return null;
+			}
+		} catch (Exception e) {
+			
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 
 }
