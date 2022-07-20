@@ -30,9 +30,9 @@ public class UserBO {
 	}
 	
 	public User getUser(String loginId, String password) {
-		String hashedPassword = passwordEncoder.encode(password);
+		
 		User user = this.getUserByLoginId(loginId);
-		if (hashedPassword.equals(user.getPassword())) {
+		if (passwordEncoder.matches(password, user.getPassword())) {
 			return user;
 		}
 		else {
