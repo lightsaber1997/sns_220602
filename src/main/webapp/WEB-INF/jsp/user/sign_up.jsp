@@ -51,17 +51,102 @@ $(document).ready(function() {
 	let is_not_duplicate_id = false;
 	let duplicate_check_complete = false;
 	
-	$("#loginIdCheckBtn").on("click", function() {
-		is_not_duplicate_id = false;
+	// detect the change in the login
+	// [reference] The input event fires when the value of an 
+	// <input>, <select>, or <textarea> element has been changed.
+	$("input[name=loginId]").on("input", function() {
 		duplicate_check_complete = false;
-		
-		let loginId = $("input[name=loginId]").val().trim();
-		return;
 	});
 	
-	$.ajax({
-		url: "/user/is_duplicated_id",
-		data: {"loginId", loginId},
+	
+	$("#loginIdCheckBtn").on("click", function() {
+		// initialization
+		is_not_duplicate_id = false;
+		duplicate_check_complete = true;
+		$("#idCheckLength").addClass("d-none");
+		$("#idCheckDuplicated").addClass("d-none");
+		$("#idCheckOk").addClass("d-none");
+		
+		
+		let loginId = $("input[name=loginId]").val().trim();
+		if (loginId.length <= 3) {
+			$("#idCheckLength").removeClass("d-none")
+			return;
+		}
+
+		
+		
+		$.ajax({
+			url: "/user/is_duplicated_id",
+			data: {"loginId": loginId},
+			datatype: "json",
+			success: function(data) {
+				console.log(data);
+				if (data["is_duplicate"] == true) {
+					is_not_duplicate_id = false;
+					$("#idCheckDuplicated").removeClass("d-none");
+				}
+				else {
+					is_not_duplicate_id = true;
+					$("#idCheckOk").removeClass("d-none");
+				}
+				
+			}
+		});
 	});
+	
+	$("#signUpBtn").on("click", function() {
+		let password = $("input[name=password]").val();
+		let confirmPassword = $("input[name=confirmPassword]").val();
+		let name = $("input[name=name]").val();
+		let email = $("input[name=email]").val();
+		
+		// check if the user did id duplication check
+		if (!duplicate_check_complete) {
+			alert("아이디 중복 검사를 해주세요.");
+			return;
+		}
+		
+		// check if the id is not an duplicate id
+		if (!is_not_duplicate_id) {
+			return;
+		}
+		
+		if (password.length == 0) {
+			alert("비밀번호를 입력해주세요.");
+			return;
+		}
+		
+		if (confirmPassword.length == 0) {
+			alert("confirmPassword를 입력해주세요.");
+			return;
+		}
+		
+		// check if the user's password and confirm password are same
+		if (password != confirmPassword) {
+			alert("password와 confirmPassword가 다릅니다. ");
+			return;
+		}
+		
+		$.ajax({
+			url: "",
+			data: {"loginId": loginId, 
+				"password": password,
+				"name": name,
+				"email": email},
+			datatype: "json",
+			success: function(data) {
+				if (data["success"] == true) {
+					alert("success");
+					// location.href = "/user/sign_in_view";
+				}
+				
+				else {
+					
+				}
+			}
+		});
+	});
+		
 });
 </script>

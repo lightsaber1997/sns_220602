@@ -16,7 +16,14 @@ public class UserBO {
 	}
 	
 	public User getUserByLoginId(String loginId) {
-		
+		return userDAO.selectUserByLoginId(loginId);
+	}
+	
+	public void addUser(String loginId,  String password,
+			 String name, String email) {
+		// TODO
+		String hashedPassword = "dd";
+		userDAO.insertUser(loginId, password, name, email);
 	}
 
 }
