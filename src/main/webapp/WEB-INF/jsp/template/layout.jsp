@@ -20,7 +20,7 @@
 		<header class="bg-info">
 			<jsp:include page="../include/gnb.jsp"/>
 		</header>
-		<section class="content d-flex justify-content-center">
+		<section class="content">
 			<jsp:include page="../${viewName}.jsp"/>
 		</section>
 		<footer class="bg-danger">
