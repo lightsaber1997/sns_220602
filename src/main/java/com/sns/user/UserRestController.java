@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,26 @@ public class UserRestController {
 	public Map<String, Object> signIn(
 			@RequestParam("loginId") String loginId,
 			@RequestParam("password") String password,
-			HttpSession session) {
+			HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<>();
 		
+		
+		
 		User user = userBO.getUser(loginId, password);
-		if (user != null) {
+		
+		
+		if (user != null) {			
+			// destroy the old existing session if it exists
+			// this part of the code tries to defend the session fixation attack.
+			// But I'm not sure if this code works properly, so don't rest on it.
+			HttpSession session = request.getSession(false);
+			if (session!= null && !session.isNew()) {
+				session.invalidate();
+			}
+			// create new session
+			request.getSession(true);
+			
+			// add appropriate attributes to the session
 			session.setAttribute("userId", user.getId());
 			session.setAttribute("userLoginId", user.getLoginId());
 			session.setAttribute("userName", user.getName());
@@ -46,7 +62,7 @@ public class UserRestController {
 		return result;
 	}
 	
-	@RequestMapping("/sign_up")
+	@PostMapping("/sign_up")
 	public Map<String, Object> signUp(
 			@RequestParam("loginId") String loginId,
 			@RequestParam("password") String password,
@@ -86,5 +102,11 @@ public class UserRestController {
 		
 		
 		return result;
+	}
+	
+	@RequestMapping("/sign_out")
+	public void signOut(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.invalidate();
 	}
 }

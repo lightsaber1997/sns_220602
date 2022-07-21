@@ -14,7 +14,7 @@ public class UserBO {
 	private UserDAO userDAO;
 	
 	@Autowired
-	@Qualifier("MD5")
+	@Qualifier("BCrypt")
 	private PasswordEncoder passwordEncoder;
 	
 	public List<User> getUserList() {

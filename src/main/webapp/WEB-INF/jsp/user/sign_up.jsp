@@ -131,6 +131,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			url: "/user/sign_up",
+			method: 'POST',
 			data: {"loginId": loginId, 
 				"password": password,
 				"name": name,
