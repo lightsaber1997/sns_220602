@@ -16,7 +16,7 @@
 						
 					</div>
 				</div>
-				<button type="button" class="btn btn-info">게시</button>
+				<button type="button" id="submit_post" class="btn btn-info">게시</button>
 			</div>
 		</div>
 		
@@ -32,7 +32,7 @@ $(document).ready(function() {
 	$("#fileUploadBtn").on({
 		click: function() {
 			$("#file").click();
-		},
+		}
 		
 	});
 	
@@ -50,6 +50,28 @@ $(document).ready(function() {
 		
 		$("#fileName").text(file_name);
 	});
+	
+	
+	$("#submit_post").on("click", function() {
+		// console.log("clicked");
+		
+		// Send a file using ajax
+		// reference: https://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
+		let form_data = new FormData();
+		form_data.append("text", $("#writeTextArea").val());
+		form_data.append("file", $("#file")[0].files[0]);
+		
+		$.ajax({
+			url: "/post/create",
+			method: "POST",
+			data: form_data,
+			processData: false,
+			contentType: false,
+			success: function(data) {
+				console.log(data);
+			}
+		});
+	});
 });
 
 
@@ -64,6 +86,5 @@ function check_file_extension(file_path, allowed_extension_list) {
 	return allowed_extension_list.includes(temp);
 }
 
-</script>
 </script>
     
