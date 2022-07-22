@@ -8,7 +8,21 @@
 		<h1 class="text-white ml-3"><a href="/timeline/timeline_view" class="text-white">Marondalgram</a></h1>
 	</div>
 	<div class="login-info d-flex align-items-end mb-3 mr-5">
-		<%-- session 정보가 있을 때만 출력 --%>
 		
+		<c:choose>
+			<c:when test="${not empty userId}">
+				<div>
+					
+					<span class="text-white">${userName}님 안녕하세요</span> 
+					<a href="/user/sign_out">로그아웃</a>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div>
+					
+					<a href="/user/sign_in_view">로그인</a>
+				</div>
+			</c:otherwise>
+		</c:choose>
 	</div>
 </div>

@@ -45,7 +45,7 @@ public class UserRestController {
 				session.invalidate();
 			}
 			// create new session
-			request.getSession(true);
+			session = request.getSession(true);
 			
 			// add appropriate attributes to the session
 			session.setAttribute("userId", user.getId());
@@ -104,9 +104,5 @@ public class UserRestController {
 		return result;
 	}
 	
-	@RequestMapping("/sign_out")
-	public void signOut(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		session.invalidate();
-	}
+	
 }

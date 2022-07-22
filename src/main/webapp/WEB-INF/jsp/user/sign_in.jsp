@@ -61,6 +61,7 @@ $(document).ready(function() {
 				"password": password},
 			success: function(data) {
 				console.log(data);
+				location.href = "/timeline/timeline_view";
 			}
 		});
 		
