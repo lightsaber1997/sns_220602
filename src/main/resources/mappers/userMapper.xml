@@ -25,4 +25,12 @@
  	values 
  		(#{loginId} , #{password}, #{name}, #{email})
  	</insert>
+ 	<select id="selectUserById" resultType="com.sns.user.User">
+ 	select
+ 		*
+ 	from
+ 		`user`
+ 	where 
+ 		`id` = #{userId}
+ 	</select>
  </mapper>

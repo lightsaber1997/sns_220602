@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="d-flex justify-content-center">
 	<div class="contents-box">
 		<div class="write-box border rounded m-3">
@@ -20,63 +20,66 @@
 				<button type="button" id="submit_post" class="btn btn-info">게시</button>
 			</div>
 		</div>
-
-
-		<%-- 타임라인 영역 --%>
-		<div class="timeline-box my-5">
-			<%-- 카드 마다 영역을 border로 나눔 --%>
-			<div class="card border rounded mt-3">
-				<%-- 글쓴이 아이디, 삭제를 위한 ...버튼 : 이 둘을 한 행에 멀리 떨어뜨려 나타내기 위해 d-flex, between --%>
-				<div class="p-2 d-flex justify-content-between">
-					<span class="font-weight-bold">글쓴이</span>
-
-					<%-- 삭제 모달을 뛰우기 위한 ... 버튼 --%>
-					<a href="#" class="more-btn"> <img
-						src="https://www.iconninja.com/files/860/824/939/more-icon.png"
-						width="30">
-					</a>
-				</div>
-
-				<%-- 카드 이미지 --%>
-				<div class="card-img">
-					<img
-						src="https://cdn.pixabay.com/photo/2022/06/18/16/55/cute-7270285__340.png"
-						class="w-100" alt="이미지">
-				</div>
-
-				<%-- 좋아요 --%>
-				<div class="card-like m-3">
-					<a href="#" class="like-btn"> <img
-						src="https://www.iconninja.com/files/214/518/441/heart-icon.png"
-						width="18px" height="18px" alt="empty heart"> 좋아요 11개
-					</a>
-				</div>
-
-				<%-- 글(post) --%>
-				<div class="card-post m-3">
-					<span class="font-weight-bold">글쓴이</span> <span>글 내용</span>
-				</div>
-
-				<%-- 댓글(comment) --%>
-				<div class="card-comment-desc border-bottom">
-					<div class="ml-3 mb-1 font-weight-bold">댓글</div>
-				</div>
-				<div class="card-comment-list m-2">
-					<%-- 댓글 목록 --%>
-					<div class="card-comment m-1">
-						<span class="font-weight-bold">댓글쓰니 : </span> <span>댓글 내용</span>
-
-						<%-- 댓글 삭제 --%>
-						<a href="#" class="commentDelBtn"
-							data-comment-id="${commentView.comment.id}"> <img
-							src="https://www.iconninja.com/files/603/22/506/x-icon.png"
-							width="10px" height="10px">
+		
+		<c:forEach var="i" begin="0" end="${arrayLength-1}">
+			<%-- 타임라인 영역 --%>
+			<div class="timeline-box my-5">
+				<%-- 카드 마다 영역을 border로 나눔 --%>
+				<div class="card border rounded mt-3">
+					<%-- 글쓴이 아이디, 삭제를 위한 ...버튼 : 이 둘을 한 행에 멀리 떨어뜨려 나타내기 위해 d-flex, between --%>
+					<div class="p-2 d-flex justify-content-between">
+						<span class="font-weight-bold">${listUser[i].name}</span>
+	
+						<%-- 삭제 모달을 뛰우기 위한 ... 버튼 --%>
+						<a href="#" class="more-btn"> <img
+							src="https://www.iconninja.com/files/860/824/939/more-icon.png"
+							width="30">
 						</a>
 					</div>
+	
+					<%-- 카드 이미지 --%>
+					<div class="card-img">
+						<img
+							src="${listPost[i].imagePath}"
+							class="w-100" alt="이미지">
+					</div>
+	
+					<%-- 좋아요 --%>
+					<div class="card-like m-3">
+						<a href="#" class="like-btn"> <img
+							src="https://www.iconninja.com/files/214/518/441/heart-icon.png"
+							width="18px" height="18px" alt="empty heart"> 좋아요 11개
+						</a>
+					</div>
+	
+					<%-- 글(post) --%>
+					<div class="card-post m-3">
+						<span class="font-weight-bold">${listUser[i].name}</span> <span>${listPost[i].content}</span>
+					</div>
+	
+					<%-- 댓글(comment) --%>
+					<div class="card-comment-desc border-bottom">
+						<div class="ml-3 mb-1 font-weight-bold">댓글</div>
+					</div>
+					<div class="card-comment-list m-2">
+						<%-- 댓글 목록 --%>
+						<div class="card-comment m-1">
+							<span class="font-weight-bold">댓글쓰니 : </span> <span>댓글 내용</span>
+	
+							<%-- 댓글 삭제 --%>
+							<a href="#" class="commentDelBtn"
+								data-comment-id="${commentView.comment.id}"> <img
+								src="https://www.iconninja.com/files/603/22/506/x-icon.png"
+								width="10px" height="10px">
+							</a>
+						</div>
+					</div>
 				</div>
+	
 			</div>
+		</c:forEach>
 
-		</div>
+			
 
 	</div>
 
@@ -84,6 +87,8 @@
 
 </div>
 
+
+<input type="hidden" id="csrf_token" name="csrf_token" value="${csrf_token}">
 
 <script>
 	$(document).ready(
@@ -122,15 +127,21 @@
 					let form_data = new FormData();
 					form_data.append("text", $("#writeTextArea").val());
 					form_data.append("file", $("#file")[0].files[0]);
-
+					
+					let csrf_token_value = $("#csrf_token").val();
 					$.ajax({
 						url : "/post/create",
 						method : "POST",
 						data : form_data,
 						processData : false,
 						contentType : false,
+						beforeSend: function(xhr) {
+							xhr.setRequestHeader("csrf_token_value", csrf_token_value);
+						},
 						success : function(data) {
 							console.log(data);
+							// reload the page
+							location.reload();
 						}
 					});
 				});
