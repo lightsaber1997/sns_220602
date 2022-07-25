@@ -74,6 +74,12 @@
 							</a>
 						</div>
 					</div>
+					
+					<%-- 댓글 쓰기 --%>
+					<div class="comment-write d-flex">
+						<input type="text" class="form-control" placeholder="댓글달기">
+						<button type="button" class="btn btn-light col-3 commentBtn" data-post-id="${listPost[i].id}">게시</button>
+					</div>
 				</div>
 	
 			</div>
@@ -91,61 +97,76 @@
 <input type="hidden" id="csrf_token" name="csrf_token" value="${csrf_token}">
 
 <script>
-	$(document).ready(
-			function() {
+$(document).ready(
+	function() {
 
-				// file upload image click
-				$("#fileUploadBtn").on({
-					click : function() {
-						$("#file").click();
+		// file upload image click
+		$("#fileUploadBtn").on({
+			click : function() {
+				$("#file").click();
+			}
+
+		});
+
+		$("#file").on(
+				"change",
+				function(e) {
+					let file_name = e.target.files[0].name;
+					let allowed_extensions = [ 'jpg', 'jpeg', 'png',
+							'gif' ]
+					let is_allowed_extension = check_file_extension(
+							file_name, allowed_extensions);
+					if (!is_allowed_extension) {
+						$(this).val("");
+						alert("이미지 파일만 업로드 할 수 있습니다. ");
+						file_name = "";
 					}
 
+					$("#fileName").text(file_name);
 				});
 
-				$("#file").on(
-						"change",
-						function(e) {
-							let file_name = e.target.files[0].name;
-							let allowed_extensions = [ 'jpg', 'jpeg', 'png',
-									'gif' ]
-							let is_allowed_extension = check_file_extension(
-									file_name, allowed_extensions);
-							if (!is_allowed_extension) {
-								$(this).val("");
-								alert("이미지 파일만 업로드 할 수 있습니다. ");
-								file_name = "";
-							}
+		$("#submit_post").on("click", function() {
+			// console.log("clicked");
 
-							$("#fileName").text(file_name);
-						});
-
-				$("#submit_post").on("click", function() {
-					// console.log("clicked");
-
-					// Send a file using ajax
-					// reference: https://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
-					let form_data = new FormData();
-					form_data.append("text", $("#writeTextArea").val());
-					form_data.append("file", $("#file")[0].files[0]);
-					
-					let csrf_token_value = $("#csrf_token").val();
-					$.ajax({
-						url : "/post/create",
-						method : "POST",
-						data : form_data,
-						processData : false,
-						contentType : false,
-						beforeSend: function(xhr) {
-							xhr.setRequestHeader("csrf_token_value", csrf_token_value);
-						},
-						success : function(data) {
-							console.log(data);
-							// reload the page
-							location.reload();
-						}
-					});
-				});
+			// Send a file using ajax
+			// reference: https://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
+			let form_data = new FormData();
+			form_data.append("text", $("#writeTextArea").val());
+			form_data.append("file", $("#file")[0].files[0]);
+			
+			let csrf_token_value = $("#csrf_token").val();
+			$.ajax({
+				url : "/post/create",
+				method : "POST",
+				data : form_data,
+				processData : false,
+				contentType : false,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader("csrf_token_value", csrf_token_value);
+				},
+				success : function(data) {
+					console.log(data);
+					// reload the page
+					location.reload();
+				}
 			});
+		});
+		
+		$(".commentBtn").on("click", function() {
+			let postId = $(this).data("post-id");
+			let content = $(this).siblings("input").val().trim();
+			
+			$.ajax({
+				url: "/comment/create",
+				method: "POST",
+				data: {"postId": postId, "content": content},
+				success: function(data) {
+					console.log(data);
+				}
+			});
+		});
+			
+});
 
 	/**
 	 * Returns whether the file_path has an allowed file extension
