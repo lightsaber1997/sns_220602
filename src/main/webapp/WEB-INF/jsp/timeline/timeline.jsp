@@ -21,14 +21,14 @@
 			</div>
 		</div>
 		
-		<c:forEach var="i" begin="0" end="${arrayLength-1}">
+		<c:forEach var="i" begin="0" end="${listLength-1}">
 			<%-- 타임라인 영역 --%>
 			<div class="timeline-box my-5">
 				<%-- 카드 마다 영역을 border로 나눔 --%>
 				<div class="card border rounded mt-3">
 					<%-- 글쓴이 아이디, 삭제를 위한 ...버튼 : 이 둘을 한 행에 멀리 떨어뜨려 나타내기 위해 d-flex, between --%>
 					<div class="p-2 d-flex justify-content-between">
-						<span class="font-weight-bold">${listUser[i].name}</span>
+						<span class="font-weight-bold">${listCardView[i].user.name}</span>
 	
 						<%-- 삭제 모달을 뛰우기 위한 ... 버튼 --%>
 						<a href="#" class="more-btn"> <img
@@ -40,7 +40,7 @@
 					<%-- 카드 이미지 --%>
 					<div class="card-img">
 						<img
-							src="${listPost[i].imagePath}"
+							src="${listCardView[i].post.imagePath}"
 							class="w-100" alt="이미지">
 					</div>
 	
@@ -54,7 +54,7 @@
 	
 					<%-- 글(post) --%>
 					<div class="card-post m-3">
-						<span class="font-weight-bold">${listUser[i].name}</span> <span>${listPost[i].content}</span>
+						<span class="fw-bold">${listCardView[i].user.name}</span> <span>${listCardView[i].post.content}</span>
 					</div>
 	
 					<%-- 댓글(comment) --%>
@@ -65,7 +65,11 @@
 						<%-- 댓글 목록 --%>
 						<div class="card-comment m-1">
 							<span class="font-weight-bold">댓글쓰니 : </span> <span>댓글 내용</span>
-	
+							
+							<c:forEach var="comment" items="${listCardView[i].commentList}" varStatus="status">
+								<p><span class="fw-bold">${comment.userName}</span> ${comment.content}</p>
+							</c:forEach>
+							
 							<%-- 댓글 삭제 --%>
 							<a href="#" class="commentDelBtn"
 								data-comment-id="${commentView.comment.id}"> <img
@@ -78,7 +82,7 @@
 					<%-- 댓글 쓰기 --%>
 					<div class="comment-write d-flex">
 						<input type="text" class="form-control" placeholder="댓글달기">
-						<button type="button" class="btn btn-light col-3 commentBtn" data-post-id="${listPost[i].id}">게시</button>
+						<button type="button" class="btn btn-light col-3 commentBtn" data-post-id="${listCardView[i].post.id}">게시</button>
 					</div>
 				</div>
 	
@@ -156,12 +160,20 @@ $(document).ready(
 			let postId = $(this).data("post-id");
 			let content = $(this).siblings("input").val().trim();
 			
+			let csrf_token_value = $("#csrf_token").val();
+			
 			$.ajax({
 				url: "/comment/create",
 				method: "POST",
 				data: {"postId": postId, "content": content},
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader("csrf_token_value", csrf_token_value);
+				},
 				success: function(data) {
 					console.log(data);
+					if (data["success"] == true) {
+						location.reload();
+					}
 				}
 			});
 		});

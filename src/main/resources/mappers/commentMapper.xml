@@ -11,5 +11,40 @@
  	values
  		(#{postId}, #{userId}, #{content})
  	</insert>
+ 	
+ 	
+ 	<select id="selectCommentByPostId" resultType="com.sns.comment.Comment">
+ 	select
+ 		*
+ 	from
+ 		`comment`
+ 	where 
+ 		postId = #{postId}
+ 	order by 
+ 		`createdAt`
+ 	desc
+ 	</select>
+ 	
+ 	<select id="selectCommentViewByPostId" resultType="com.sns.comment.CommentView">
+ 	select
+		c.id as id,
+		c.postId as postId,
+	    c.userId as userId,
+	    c.content as content,
+	    c.createdAt as createdAt,
+	    c.updatedAt as updatedAt,
+	    u.loginId as userLoginId,
+	    u.name as userName,
+	    u.email as userEmail
+	from 
+		`comment` c
+	join
+		`user` u
+	on c.userId = u.id
+	where c.postId = #{postId}
+	order by
+		c.createdAt desc;
+ 	
+ 	</select>
  
  </mapper>

@@ -12,10 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.sns.comment.Comment;
 import com.sns.common.AlphaNumericRandomStringGenerator;
 import com.sns.common.RandomStringGenerator;
 import com.sns.post.Post;
 import com.sns.post.PostBO;
+import com.sns.timeline.Model.CardView;
 import com.sns.user.User;
 import com.sns.user.UserBO;
 
@@ -27,6 +29,9 @@ public class TimelineController {
 	
 	@Autowired
 	private PostBO postBO;
+	
+	@Autowired
+	private TimelineBO timelineBO;
 	
 	@Autowired
 	private RandomStringGenerator randomStringGenerator;
@@ -55,11 +60,15 @@ public class TimelineController {
 			session.setAttribute("csrf_token", csrf_token);
 		}
 		
-
-		model.addAttribute("listPost", listPost);
-		model.addAttribute("listUser", listUser);
-		model.addAttribute("arrayLength", arrayLength);
+		
+		List<CardView> listCardView  = timelineBO.generateCardViewList();
+		
+		int listLength = listCardView.size();
+		model.addAttribute("listLength", listLength);
+		model.addAttribute("listCardView", listCardView);
 		model.addAttribute("csrf_token", csrf_token);
+		
+		
 		return "template/layout";
 	}
 }
