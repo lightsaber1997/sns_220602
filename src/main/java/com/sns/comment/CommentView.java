@@ -5,7 +5,7 @@ public class CommentView extends Comment {
 	private String userLoginId;
 	private String userName;
 	private String userEmail;
-	
+
 	
 	public String getUserLoginId() {
 		return userLoginId;
