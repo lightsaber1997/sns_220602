@@ -1,5 +1,6 @@
 package com.sns.like;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,11 +21,14 @@ public class LikeRestController {
 	public Map<String, Object> like(
 			@PathVariable int postId,
 			HttpServletRequest request) {
+		
+		Map<String, Object> map = new HashMap<>();
+		
 		HttpSession session = request.getSession();
 		int userId = (int) session.getAttribute("userId");
 		
 		likeBO.insertLike(userId, postId);
-		
-		return null;
+		map.put("success", true);
+		return map;
 	}
 }

@@ -11,7 +11,10 @@ public class CardView {
 	private Post post;
 	private User user;
 	private List<CommentView> commentList;
-	
+	// indicates whether the user pressed like for the post
+	private boolean filledLike;
+	// the number of like for this post
+	private int likeCount;
 	
 	public CardView(Post post, User user, List<CommentView> commentList) {
 		super();
@@ -46,6 +49,22 @@ public class CardView {
 
 	public void setCommentList(List<CommentView> commentList) {
 		this.commentList = commentList;
+	}
+
+	public boolean isFilledLike() {
+		return filledLike;
+	}
+
+	public void setFilledLike(boolean filledLike) {
+		this.filledLike = filledLike;
+	}
+
+	public int getLikeCount() {
+		return likeCount;
+	}
+
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
 	}
 	
 	

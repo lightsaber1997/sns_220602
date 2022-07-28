@@ -60,8 +60,8 @@ public class TimelineController {
 			session.setAttribute("csrf_token", csrf_token);
 		}
 		
-		
-		List<CardView> listCardView  = timelineBO.generateCardViewList();
+		Integer requestUserId = (Integer) session.getAttribute("userId");
+		List<CardView> listCardView  = timelineBO.generateCardViewList(requestUserId);
 		
 		int listLength = listCardView.size();
 		model.addAttribute("listLength", listLength);

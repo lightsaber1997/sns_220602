@@ -1,5 +1,6 @@
 package com.sns.like;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +20,13 @@ public class LikeBO {
 			likeDAO.deleteLike(userId, postId);
 		}
 		
+	}
+	
+	public Like selectLikeByUserIdAndPostId(int userId, int postId) {
+		return likeDAO.selectLikeByUserIdAndPostId(userId, postId);
+	}
+	
+	public int getlikeCountByPostId(int postId) {
+		return likeDAO.getlikeCountByPostId(postId);
 	}
 }

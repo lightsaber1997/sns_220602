@@ -27,4 +27,12 @@
  		postId = #{postId}
  	</delete>
  	
+ 	<select id="getlikeCountByPostId" resultType="int">
+ 	select
+		count(*)
+	from
+		`like`
+	where
+		`postId` = #{postId};
+ 	</select>
  </mapper>

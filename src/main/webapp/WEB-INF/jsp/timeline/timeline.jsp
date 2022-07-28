@@ -39,17 +39,37 @@
 	
 					<%-- 카드 이미지 --%>
 					<div class="card-img">
-						<img
-							src="${listCardView[i].post.imagePath}"
-							class="w-100" alt="이미지">
+						
+							<img
+								src="${listCardView[i].post.imagePath}"
+								class="w-100" alt="이미지">
 					</div>
 	
 					<%-- 좋아요 --%>
 					<div class="card-like m-3">
-						<a href="#" class="like-btn"> <img
-							src="https://www.iconninja.com/files/214/518/441/heart-icon.png"
-							width="18px" height="18px" alt="empty heart"> 좋아요 11개
-						</a>
+						<div class="like-btn d-flex justify-content-start"> 
+						<div class="pr-5 saveLikeButton" data-post-id="${listCardView[i].post.id}">
+						
+						<c:choose>
+							<c:when test="${listCardView[i].filledLike}">
+								<img 
+								src="https://www.iconninja.com/files/527/809/128/heart-icon.png"
+								width="18px" height="18px" alt="empty heart"> 
+							</c:when>
+							<c:otherwise>
+								<img 
+								src="https://www.iconninja.com/files/214/518/441/heart-icon.png"
+								width="18px" height="18px" alt="empty heart"> 
+							</c:otherwise>
+						</c:choose>
+						
+							
+						</div>
+						<div>
+						좋아요 ${listCardView[i].likeCount}개
+						</div>
+							
+						</div>
 					</div>
 	
 					<%-- 글(post) --%>
@@ -103,6 +123,9 @@
 <script>
 $(document).ready(
 	function() {
+		$("#writeTextArea").css("outline", "none");
+		$("#writeTextArea").css("resize", "none");
+		$(".saveLikeButton").css("cursor", "pointer");
 
 		// file upload image click
 		$("#fileUploadBtn").on({
@@ -169,6 +192,19 @@ $(document).ready(
 				beforeSend: function(xhr) {
 					xhr.setRequestHeader("csrf_token_value", csrf_token_value);
 				},
+				success: function(data) {
+					console.log(data);
+					if (data["success"] == true) {
+						location.reload();
+					}
+				}
+			});
+		});
+		
+		$(".saveLikeButton").on("click", function() {
+			let postId = $(this).data("post-id");
+			$.ajax({
+				url: "/like/" + postId,
 				success: function(data) {
 					console.log(data);
 					if (data["success"] == true) {
