@@ -22,4 +22,12 @@ public class CommentBO {
 	public List<CommentView> selectCommentViewByPostId(int postId) {
 		return commentDAO.selectCommentViewByPostId(postId);
 	}
+	
+	public void deleteCommentByPostId(int postId) {
+		commentDAO.deleteCommentByPostId(postId);
+	}
+	
+	public void deleteCommentById(int id) {
+		commentDAO.deleteCommentById(id);
+	}
 }

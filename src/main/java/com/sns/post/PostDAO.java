@@ -14,4 +14,6 @@ public interface PostDAO {
 			@Param("userId") int userId,
 			@Param("content") String content,
 			@Param("imagePath") String imagePath);
+	public void deletePostById(
+			@Param("id") int id);
 }

@@ -46,5 +46,18 @@
 		c.createdAt desc;
  	
  	</select>
- 
+ 	
+ 	<delete id="deleteCommentByPostId">
+ 	delete from
+ 		`comment`
+ 	where
+ 		`postId` = #{postId}
+ 	</delete>
+ 	
+ 	<delete id="deleteCommentById">
+ 	delete from
+ 		`comment`
+ 	where
+ 		`id` = #{id}
+ 	</delete>
  </mapper>

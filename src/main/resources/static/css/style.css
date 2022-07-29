@@ -48,4 +48,8 @@ header {
   cursor: pointer;
 }
 
+.card-comment-list .commentDelBtn {
+  cursor: pointer;
+}
+
 /*# sourceMappingURL=style.css.map */

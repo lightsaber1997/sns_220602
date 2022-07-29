@@ -4,6 +4,9 @@
 <div class="d-flex justify-content-center">
 	<div class="contents-box">
 		<div class="write-box border rounded m-3">
+			<div id="uploadImageWrapper" >
+				<img class="d-none img-fluid" id="uploadImage">
+			</div>
 			<textarea id="writeTextArea" placeholder="내용을 입력해주세요"
 				class="w-100 border-0"></textarea>
 			<div class="d-flex justify-content-between">
@@ -29,12 +32,15 @@
 					<%-- 글쓴이 아이디, 삭제를 위한 ...버튼 : 이 둘을 한 행에 멀리 떨어뜨려 나타내기 위해 d-flex, between --%>
 					<div class="p-2 d-flex justify-content-between">
 						<span class="font-weight-bold">${listCardView[i].user.name}</span>
-	
-						<%-- 삭제 모달을 뛰우기 위한 ... 버튼 --%>
-						<a href="#" class="more-btn"> <img
-							src="https://www.iconninja.com/files/860/824/939/more-icon.png"
-							width="30">
-						</a>
+						
+						<c:if test="${listCardView[i].user.id eq userId}">
+							<%-- 삭제 모달을 뛰우기 위한 ... 버튼 --%>
+							<a href="#" class="more-btn"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-post-id="${listCardView[i].post.id}"> <img
+								src="https://www.iconninja.com/files/860/824/939/more-icon.png"
+								width="30">
+							</a>
+						</c:if>
+
 					</div>
 	
 					<%-- 카드 이미지 --%>
@@ -87,21 +93,28 @@
 							<span class="font-weight-bold">댓글쓰니 : </span> <span>댓글 내용</span>
 							
 							<c:forEach var="comment" items="${listCardView[i].commentList}" varStatus="status">
-								<p><span class="fw-bold">${comment.userName}</span> ${comment.content}</p>
+								<div class="d-flex">
+									<p class="col-10"><span class="fw-bold">${comment.userName}</span> ${comment.content}</p>
+									<c:if test="${userId eq comment.userId}">
+									<%-- 댓글 삭제 --%>
+										<div href="#" class="commentDelBtn"
+											data-comment-id="${comment.id}"> <img
+											src="https://www.iconninja.com/files/603/22/506/x-icon.png"
+											width="10px" height="10px">
+										</div>	
+									</c:if>
+									
+								</div>
+
 							</c:forEach>
 							
-							<%-- 댓글 삭제 --%>
-							<a href="#" class="commentDelBtn"
-								data-comment-id="${commentView.comment.id}"> <img
-								src="https://www.iconninja.com/files/603/22/506/x-icon.png"
-								width="10px" height="10px">
-							</a>
+								
 						</div>
 					</div>
 					
 					<%-- 댓글 쓰기 --%>
 					<div class="comment-write d-flex">
-						<input type="text" class="form-control" placeholder="댓글달기">
+						<input type="text" class="form-control commentText" placeholder="댓글달기">
 						<button type="button" class="btn btn-light col-3 commentBtn" data-post-id="${listCardView[i].post.id}">게시</button>
 					</div>
 				</div>
@@ -119,6 +132,32 @@
 
 
 <input type="hidden" id="csrf_token" name="csrf_token" value="${csrf_token}">
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-post-id="">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        게시물을 삭제하겠습니까?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary delPost">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <script>
 $(document).ready(
@@ -148,10 +187,18 @@ $(document).ready(
 						alert("이미지 파일만 업로드 할 수 있습니다. ");
 						file_name = "";
 					}
-
+					
+					let file = this.files[0];
+					
 					$("#fileName").text(file_name);
+					$("#uploadImage").removeClass("d-none");
+					$("#uploadImage").attr("src", URL.createObjectURL(file));
+					
+					
 				});
-
+		
+	
+		
 		$("#submit_post").on("click", function() {
 			// console.log("clicked");
 
@@ -201,6 +248,13 @@ $(document).ready(
 			});
 		});
 		
+		$(".commentText").on("keypress", function(e) {
+			if (e.key == "Enter") {
+				console.log("ddd");
+				$(".commentBtn").trigger("click");
+			}
+		});
+		
 		$(".saveLikeButton").on("click", function() {
 			let postId = $(this).data("post-id");
 			$.ajax({
@@ -213,7 +267,44 @@ $(document).ready(
 				}
 			});
 		});
+		
+		$(".more-btn").on("click", function(e) {
+			e.preventDefault();
 			
+			let postId = $(this).data("post-id");
+			
+			$("#exampleModal").data("post-id", postId);
+		});
+		
+		$("#exampleModal .delPost").on("click", function(e) {
+			let postId = $("#exampleModal").data("post-id");
+			// console.log(postId);
+			$.ajax({
+				type: "DELETE",
+				url: "/post/delete",
+				data: {"postId": postId},
+				success: function(data) {
+					console.log(data);
+					if (data["success"] == true) {
+						location.reload(true);
+					}
+				}
+			});
+		});
+		
+		$(".commentDelBtn").on("click", function() {
+			let commentId = $(this).data("comment-id");
+			$.ajax({
+				url: "/comment/delete",
+				method: "POST",
+				data: {"commentId": commentId},
+				success: function(data) {
+					if (data["success"] == true) {
+						location.reload(true);
+					}
+				}
+			});
+		});
 });
 
 	/**

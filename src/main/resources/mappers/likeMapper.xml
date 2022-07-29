@@ -35,4 +35,11 @@
 	where
 		`postId` = #{postId};
  	</select>
+ 	
+ 	<delete id="deleteLikeByPostId">
+ 	delete from
+ 		`like`
+ 	where
+ 		`postId` = #{postId}
+ 	</delete>
  </mapper>

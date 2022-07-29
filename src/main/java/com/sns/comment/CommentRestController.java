@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -63,5 +64,18 @@ public class CommentRestController {
 			
 		return result;
 		
+	}
+	
+	@RequestMapping("/comment/delete")
+	public Map<String, Object> deleteComment(
+			@RequestParam("commentId") int commentId) {
+		Map<String, Object> map = new HashMap<>();
+		try {
+			commentBO.deleteCommentById(commentId);
+			map.put("success", true);
+		} catch (Exception e) {
+			map.put("success", false);
+		}
+		return map;
 	}
 }

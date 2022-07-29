@@ -41,4 +41,17 @@ public class FileManagerService {
 		
 		return null;
 	}
+	
+	public void deleteFile(String dbImagePath) throws IOException {
+		// "/images/test2_1658477877636/theron.jpg"
+		String imagePath = dbImagePath.substring(8);
+		Path path = Paths.get(FILE_UPLOAD_PATH + imagePath);
+		if (Files.exists(path)) {
+			Files.delete(path);
+		}
+		Path parent = path.getParent();
+		if (Files.exists(parent)) {
+			Files.delete(parent);
+		}
+	}
 }

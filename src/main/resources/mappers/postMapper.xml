@@ -31,4 +31,11 @@
  	)
  	
  	</insert>
+ 	
+ 	<delete id="deletePostById">
+ 	delete from
+ 		`post`
+ 	where
+ 		id = #{id}
+ 	</delete>
  </mapper>
